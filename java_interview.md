@@ -713,4 +713,6 @@ SELECT ID FROM T WITH(INDEX(索引名)) WHERE NUM=@NUM”
 二六、jvm 最大内存设置。设置的原理。结合垃圾回收讲讲。
 答：   详见：http://www.open-open.com/lib/view/open1324736648468.html
  
- 
+# 查漏补缺
+## transient
+## volatile
