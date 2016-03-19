@@ -141,5 +141,103 @@
  + `web.xml`
 
 -------------
-s
+
 # 三、`Action`类文件
+```
+public interface Action
+{
+  public static final String  ERROR= "error";
+  public static final String  SUCCESS= "success";
+  public static final String  INPUT= "input";
+  public static final String  LOGIN= "login";
+  public static final String  NONE= "now";
+  public String execute() throws Exception;
+}
+```
+ ## 1. `ActionSupport`
+  >自定义的`Action`类继承了`ActionSupport`类，因此必须定义一个变量`serialVersionUID`
+
+  ```
+  private static final long serialVersionUID=1L;
+  ```
+  ## 2. `Servlet API`
+  + 通过 `ActionContext`类访问
+  | Header One     | Header Two     |
+  | :------------- | :------------- |
+  | void put(String key, Object value)       | Item Two       |
+  | Map getApplication()      | Item Two       |
+  | Map getSession       | Item Two       |
+
+
+  + 通过特定接口访问(直接访问实例)
+  | Header One     | Header Two     |
+  | :------------- | :------------- |
+  | `ServletRequestAware`    | Item Two       |
+  | `ServletResponsetAware`    | Item Two       |
+  | `ServletContextAware`    | Item Two       |
+
+  + 通过`ServletActionContext`访问
+  | Header One     | Header Two     |
+  | :------------- | :------------- |
+  | `HttpServletRequest`       | Item Two       |
+  | `HttpServletResponse`       | Item Two       |
+  | `ServletContext`       | Item Two       |
+
+## 3. `ModelDriven`接口
+
+  ```
+  public class LoginAction extends ActionSupport implements ModelDriven<XxxModel>
+  {
+  	private static final long serialVersionUID = 1L;
+  	// 创建XxxModel实例
+  	private XxxModel x = new XxxModel();
+
+  	// getter方法，必须实现
+  	public XxxModel getModel()
+  	{
+  		// TODO Auto-generated method stub
+  		return x;
+  	}
+
+  	// 重载execute方法
+  	public String execute() throws Exception
+  	{
+  		return SUCCESS;
+  	}
+  }
+
+  ```
+
+  ## 4. 异常处理
+  + `全局异常配置`
+  + `局部异常配置`
+
+  输出异常信息
+  + 输出异常对象信息
+  ```
+<s:property value="exception.message"/>
+  ```
+  + 输出异常堆栈信息
+  ```
+  <s:property value="exceptionStack"/>
+  ```
+
+  ```
+  <struts>  
+    <package name="default" namespace="/" extends="struts-default">
+        <global-results>
+                       <result name="Exception">/Exception.jsp</result>
+                       <result name="SQLException">/SQLException.jsp</result>
+        </global-results>
+        <global-exception-mappings>
+            <exception-mapping exception="java.sql.SQLException" result="SQLException"/>
+            <exception-mapping exception="java.lang.Exception" result="Exception"/>
+        </global-exception-mappings>      
+        <action name="user" class="com.action.UserAction">
+            <exception-mapping exception="com.action.SecurityException" result="login"/>        
+		   <result name="login" >/loginException.jsp </result>
+            <result>/success.jsp</result>
+        </action>    
+    </package>    
+</struts>
+  ```
